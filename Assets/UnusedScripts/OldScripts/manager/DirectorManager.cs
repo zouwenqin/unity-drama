@@ -19,7 +19,7 @@ public class DirectorManager
 		currentSound = "sound1";
 	}
 
-   // Start is called before the first frame update
+   
    public static DirectorManager getInstance()
 	{
 		if(instance==null)

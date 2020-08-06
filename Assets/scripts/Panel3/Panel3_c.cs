@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -9,7 +10,7 @@ public class Panel3_c : MonoBehaviour
 {
     public static Panel3_c _Instance;
     public GameObject videoObj;
-    public VideoPlayer videoPlayer;
+    
     public Transform VideoItemParent;
     public GameObject videoItem;
     public AVProMovieCaptureBase _movieCapture;
@@ -28,15 +29,21 @@ public class Panel3_c : MonoBehaviour
     [HideInInspector]
     public int videoIndex;
 
-    void Start()
+    private void Awake()
     {
         _Instance = this;
+    }
+    void Start()
+    {
+        Debug.LogError(DateTime.Now.ToString()) ;
+        //videoPlayPanel.GetComponent<AVProMovieCaptureFromScene>().
         _movieCapture._downScale = AVProMovieCaptureBase.DownScale.Original;//原画画质
         _movieCapture._frameRate = AVProMovieCaptureBase.FrameRate.Thirty;//帧数
         _movieCapture._outputFolderPath = Application.streamingAssetsPath;//保存视频的路径
         //_movieCapture._codecName = "Media Foundation H.264(MP4)";//设置视频格式
         _movieCapture._useMediaFoundationH264 = true;
         _movieCapture._autoFilenameExtension = "mp4";//格式
+        //_movieCapture._codecName = "x264";
         outline = Resources.Load<Material>("Shaders/Custom_ImageOutline");
 
     }
@@ -66,22 +73,22 @@ public class Panel3_c : MonoBehaviour
             return;
         }
         //if (PanelOne_C.Instance.panelOneM.CharacterTex1 != null)
-        if (PanelOne_C.Instance.CharacterTex1 != null)
+        if (PanelOne_C.Instance.actorImage1 != null)
         {
             //ImagePerson[0].sprite = PanelOne_C.Instance.panelOneM.CharacterTex1;
-            ImagePerson[0].sprite = PanelOne_C.Instance.CharacterTex1;
+            ImagePerson[0].sprite = PanelOne_C.Instance.actorImage1;
         }
         //if (PanelOne_C.Instance.panelOneM.CharacterTex2 != null)
-        if (PanelOne_C.Instance.CharacterTex2 != null)
+        if (PanelOne_C.Instance.actorImage2 != null)
         {
             //ImagePerson[1].sprite = PanelOne_C.Instance.panelOneM.CharacterTex2;
-            ImagePerson[1].sprite = PanelOne_C.Instance.CharacterTex2;
+            ImagePerson[1].sprite = PanelOne_C.Instance.actorImage2;
         }
         //if (PanelOne_C.Instance.panelOneM.CharacterTex3 != null)
-        if (PanelOne_C.Instance.CharacterTex3 != null)
+        if (PanelOne_C.Instance.actorImage3 != null)
         {
             //ImagePerson[2].sprite = PanelOne_C.Instance.panelOneM.CharacterTex3;
-            ImagePerson[2].sprite = PanelOne_C.Instance.CharacterTex3;
+            ImagePerson[2].sprite = PanelOne_C.Instance.actorImage3;
         }
         CreateVideoItem();
     }
@@ -140,12 +147,13 @@ public class Panel3_c : MonoBehaviour
                     videoItemObj.transform.SetParent(VideoItemParent);
                     videoItemObj.transform.localScale = Vector3.one;
                     videoItemObj.transform.localPosition = new Vector3(videoItemObj.transform.localPosition.x, videoItemObj.transform.localPosition.y, 0);
-                    videoItemObj.transform.GetComponent<VideoPath>().videoPath = fileInfos[i].FullName;
+                    videoItemObj.transform.GetComponent<VideoItem>().videoPath = fileInfos[i].FullName;
+                    videoItemObj.transform.GetComponent<VideoItem>().videoItemScenarioName = GameManager.Instance.GetScenarioName();
                     videoItemObj.GetComponent<Button>().onClick.AddListener(() =>
                     {
                         OnClickChooseVideo(videoItemObj.transform);
 
-                        videoPlayer.url = videoItemObj.transform.GetComponent<VideoPath>().videoPath;
+                        VideoPlayerController._instance.videoPlayer.url = videoItemObj.transform.GetComponent<VideoItem>().videoPath;
                         
                     });
                     //Debug.Log( "FullName:" + fileInfos[i].FullName );  
@@ -190,7 +198,7 @@ public class Panel3_c : MonoBehaviour
 
     public void StopPlay()
     {
-        videoPlayer.Stop();
+        VideoPlayerController._instance.videoPlayer.Stop();
     }
 
     public bool ShowOutline(Transform trans)
@@ -220,5 +228,12 @@ public class Panel3_c : MonoBehaviour
             }
         }
         return 0;
+    }
+
+    public string GetRecordDate()
+    {
+        
+        return null;
+
     }
 }
