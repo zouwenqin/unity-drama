@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager 
 {
@@ -15,6 +17,8 @@ public class GameManager
     private string musicName;
     private string[] actorName = { "" , "" ,"" };
     private Sprite[] actorImage = { null, null, null };
+
+    public Dictionary<string, string> videoinfo = new Dictionary<string, string>();
     
     public static GameManager Instance
     {

@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class PanelOne_C : MonoBehaviour
 {
     #region  字段
-    
-    private string scenarioName;
+    [HideInInspector]
+    public string scenarioName;
     private string playerName1;
     private string playerName2;
     /// <summary>
@@ -34,12 +34,12 @@ public class PanelOne_C : MonoBehaviour
     private Material outline;
     #endregion
     public static PanelOne_C Instance;
-    public InputField inputField_scenarioName;
+    public  InputField inputField_scenarioName;
     public InputField inputField_player1;
     public InputField inputField_player2;
     public InputField inputField_player3;
     public Dropdown drop;
-    private Vector2 currentSize;
+    
 
     public Transform defaultScene;
     public Transform defaultActor1;
@@ -296,7 +296,7 @@ public class PanelOne_C : MonoBehaviour
 
     public void UpdateSize(Transform trans)
     {
-        trans.localScale = new Vector3(currentSize.x * 1.3f,currentSize.y*1.3f, 1);
+        //trans.localScale = new Vector3(currentSize.x * 1.3f,currentSize.y*1.3f, 1);
     }
 
 }

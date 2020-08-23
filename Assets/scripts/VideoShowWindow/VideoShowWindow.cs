@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -18,7 +19,8 @@ public class VideoShowWindow : MonoBehaviour
     public VideoPlayer videoPlayer;
     private RawImage rawImage;
     public Text RecordDate;
-    public Text DramaName;
+    public Text ScenarioName;
+    public GameObject bigScreenShowPanel;
 
     private bool showVolumeSlider = false;
     private int currentMinute, currentSecond;
@@ -27,6 +29,12 @@ public class VideoShowWindow : MonoBehaviour
 
     private void Start()
     {
+        ScenarioName.text = PlayerPrefs.GetString(VideoPlayerController._instance.videoPlayer.url);
+
+        //Debug.LogError(GameManager.Instance.GetScenarioName());
+        RecordDate.text = PlayerPrefs.GetString(ScenarioName.text);
+        //Debug.LogError(RecordDate.text);
+        //RecordDate.text = VideoPlayerController._instance.videoItemDate[Panel3_c._Instance.GetVideoItemIndex()].ToString();
         //_instance = this;
         foreach(Transform go in buttons)
         {
@@ -83,11 +91,24 @@ public class VideoShowWindow : MonoBehaviour
 
     public void DeleteVideo()
     {
+        if (File.Exists(VideoPlayerController._instance.videoPlayer.url))
+        {
+            File.Delete(VideoPlayerController._instance.videoPlayer.url);
+            File.Delete(VideoPlayerController._instance.videoPlayer.url + ".meta");
+        }
+        //PlayerPrefs.DeleteKey(VideoPlayerController._instance.videoPlayer.url);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        VideoPlayerController._instance.videoItemList.RemoveAt(Panel3_c._instance.GetVideoItemIndex());
+        VideoPlayerController._instance.videoItemPathList.Remove(VideoPlayerController._instance.videoPlayer.url);
+            GameObject.Destroy(Panel3_c._instance.videoItemParent.GetChild(Panel3_c._instance.GetVideoItemIndex()).gameObject);
+        //Panel3_c._Instance.CreateVideoItem();
         this.gameObject.SetActive(false);
-        //Panel3_c._Instance.gameObject.SetActive(true);
-        File.Delete(VideoPlayerController._instance.videoPlayer.url);
-        GameObject.Destroy(Panel3_c._Instance.VideoItemParent.GetChild(Panel3_c._Instance.GetVideoItemIndex()).gameObject);
-        Panel3_c._Instance.CreateVideoItem();
+        for (int i = 0; i < Panel3_c._instance.videoItemParent.childCount; i++)
+        {
+            Panel3_c._instance.videoItemParent.GetChild(i).GetComponent<Image>().material = null;
+        }
+        
     }
 
     public void InitVolume()

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -10,7 +11,8 @@ public class VideoPlayerController :MonoBehaviour
 
     public VideoPlayer videoPlayer;
 
-   
+    public List<GameObject> videoItemList = new List<GameObject>();
+    public List<string> videoItemPathList = new List<string>();
 
     private void Awake()
     {

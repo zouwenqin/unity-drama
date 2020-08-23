@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class bigScreenShowPanel : MonoBehaviour
+public class BigScreenShowPanel : MonoBehaviour
 {
     public Transform videoItemContent;
     public GameObject videoItemPrefab;
@@ -16,7 +16,8 @@ public class bigScreenShowPanel : MonoBehaviour
 
     //private GameObject videoItem;
     private Material outline;
-    private List<GameObject> videoItemPool = new List<GameObject>();
+    [HideInInspector]
+    public  List<GameObject> videoItemPool = new List<GameObject>();
 
     private void Start()
     {
@@ -25,17 +26,43 @@ public class bigScreenShowPanel : MonoBehaviour
     private void OnEnable()
     {
         InitVideoItem();
-        //CreateVideoItem();
+        
     }
 
     private void OnDisable()
     {
-        HideVideoItem();
+        for (int i = videoItemContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(videoItemContent.GetChild(i).gameObject);
+        }
     }
 
     public void InitVideoItem()
     {
-       
+        //Debug.LogError(VideoPlayerController._instance.videoItemPathList.Count);
+        for (int i = 0; i < VideoPlayerController._instance.videoItemList.Count; i++)
+        {
+            //GameObject videoItem = VideoPlayerController._instance.videoItemList[i];
+            GameObject videoItem = VideoPlayerController._instance.videoItemList[i];
+            videoItem.transform.SetParent(videoItemContent, false);
+            videoItem.transform.localScale = Vector3.one;
+            //videoItem.transform.GetComponent<VideoItem>().videoPath = VideoPlayerController._instance.videoItemList[i].GetComponent<VideoItem>().videoPath;
+            videoItem.transform.GetComponent<Button>().onClick.RemoveAllListeners();
+            videoItem.transform.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                
+                OnClickChooseVideo(videoItem.transform);
+                if (videoItem.GetComponent<Image>().material != null)
+                {
+                    VideoPlayerController._instance.videoPlayer.url = videoItem.transform.GetComponent<VideoItem>().videoPath;
+                }
+            });
+        }
+    }
+
+    public void InitVideoItem1()
+    {
+        //HideVideoItem();
         if (Directory.Exists(Application.streamingAssetsPath))
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath);
@@ -45,21 +72,24 @@ public class bigScreenShowPanel : MonoBehaviour
             {
 
 
-                GameObject videoItem = GetVideoItem();
-                //GameObject videoItem = GameObject.Instantiate<GameObject>(videoItemPrefab);
-                if (videoItem.transform.parent != videoItemContent)
-                {
-                    videoItem.transform.SetParent(videoItemContent);
+                //GameObject videoItem = GetVideoItem();
+                GameObject videoItem = GameObject.Instantiate<GameObject>(videoItemPrefab,videoItemContent,false);
+               
+                    
                     videoItem.transform.localScale = Vector3.one;
-                    videoItem.transform.localPosition = new Vector3(videoItem.transform.localPosition.x, videoItem.transform.localPosition.y, 0);
+                    //videoItem.transform.localPosition = new Vector3(videoItem.transform.localPosition.x, videoItem.transform.localPosition.y, 0);
                     videoItem.transform.GetComponent<VideoItem>().videoPath = fileInfos[i].FullName;
                     videoItem.transform.GetComponent<Button>().onClick.AddListener(() =>
                     {
+                        //Debug.LogError("fullScreen" + videoItemPool.Count);
                         OnClickChooseVideo(videoItem.transform);
-                        VideoPlayerController._instance.videoPlayer.url = videoItem.transform.GetComponent<VideoItem>().videoPath;
+                        if (videoItem.GetComponent<Image>().material != null)
+                        {
+                            VideoPlayerController._instance.videoPlayer.url = videoItem.transform.GetComponent<VideoItem>().videoPath;
+                        }
                     });
                 }
-            }
+            
         }
     }
 
@@ -88,39 +118,19 @@ public class bigScreenShowPanel : MonoBehaviour
         }
     }
 
-    public void CreateVideoItem()
+    public bool ShowOutline(Transform trans)
     {
-
-        for (int i = 0; i < videoItemContent.childCount; i++)
+        if (trans.GetComponent<Image>().material != outline)
         {
-            GameObject.Destroy(videoItemContent.GetChild(i).gameObject);
 
+            trans.GetComponent<Image>().material = outline;
+            return true;
         }
-        if (Directory.Exists(Application.streamingAssetsPath))
+        else
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath);
-            FileInfo[] fileInfos = directoryInfo.GetFiles("*", SearchOption.AllDirectories);
-            for (int i = 0; i < fileInfos.Length; i++)
-            {
-                if (fileInfos[i].Name.EndsWith(".meta")) continue;
-                if (fileInfos[i].Name.EndsWith(".mp4"))
-                {
-                    GameObject videoItemObj = GameObject.Instantiate<GameObject>(videoItemPrefab);
-                    videoItemObj.transform.SetParent(videoItemContent);
-                    videoItemObj.transform.localScale = Vector3.one;
-                    videoItemObj.transform.localPosition = new Vector3(videoItemObj.transform.localPosition.x, videoItemObj.transform.localPosition.y, 0);
-                    videoItemObj.transform.GetComponent<VideoItem>().videoPath = fileInfos[i].FullName;
-                    videoItemObj.GetComponent<Button>().onClick.AddListener(() =>
-                    {
-                        OnClickChooseVideo(videoItemObj.transform);
 
-                        VideoPlayerController._instance.videoPlayer.url = videoItemObj.transform.GetComponent<VideoItem>().videoPath;
-
-                    });
-                    //Debug.Log( "FullName:" + fileInfos[i].FullName );  
-                    //Debug.Log( "DirectoryName:" + fileInfos[i].DirectoryName );  
-                }
-            }
+            trans.GetComponent<Image>().material = null;
+            return false;
         }
     }
 
@@ -148,22 +158,6 @@ public class bigScreenShowPanel : MonoBehaviour
         for (int i = 0; i < videoItemPool.Count; i++)
         {
             videoItemPool[i].SetActive(false);
-        }
-    }
-
-    public bool ShowOutline(Transform trans)
-    {
-        if (trans.GetComponent<Image>().material != outline)
-        {
-
-            trans.GetComponent<Image>().material = outline;
-            return true;
-        }
-        else
-        {
-
-            trans.GetComponent<Image>().material = null;
-            return false;
         }
     }
 

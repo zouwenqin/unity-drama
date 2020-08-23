@@ -44,17 +44,22 @@ public enum EditStyle
 public class PanelTwo_C : MonoBehaviour
 {
 
-    public static PanelTwo_C _Instance;
+    public Dropdown borderStyle;
+    public Dropdown filterStyle;
+    public Dropdown editStyle;
+    public Sprite[] styleImages;
 
     void Start()
     {
-        _Instance = this;
+        ChooseStyle();
     }
 
-    private void Update()
+    public void ChooseStyle()
     {
+        if(borderStyle.value  == 0 && filterStyle.value == 0)
+        {
 
-
+        }
     }
 
 

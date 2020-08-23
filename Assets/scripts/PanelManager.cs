@@ -75,7 +75,7 @@ public class PanelManager : MonoBehaviour
 
 
         //如果当前是第一个panel的状态下
-        if (PanelManager._instance.currentState == CurrentPanel.panel1)
+        if (currentState == CurrentPanel.panel1)
         {
 
             //检查数据是否全部填写
@@ -93,7 +93,7 @@ public class PanelManager : MonoBehaviour
         }
 
         //如果当前是第二个panel的状态下
-        if (PanelManager._instance.currentState == CurrentPanel.panel2)
+        if (currentState == CurrentPanel.panel2)
         {
 
             panel2.SetActive(false);
@@ -118,20 +118,20 @@ public class PanelManager : MonoBehaviour
     /// </summary>
     public void OnClickReturnButton()
     {
-        if (PanelManager._instance.currentState == CurrentPanel.panel1)
+        if (currentState == CurrentPanel.panel1)
         {
             SceneManager.LoadScene("mainScene");
             SetCurrentScene(CurrentPanel.startscene);
 
         }
-        if (PanelManager._instance.currentState == CurrentPanel.panel2)
+        if (currentState == CurrentPanel.panel2)
         {
             SetCurrentScene(CurrentPanel.panel1);
 
             panel2.SetActive(false);
             panel1.SetActive(true);
         }
-        if (PanelManager._instance.currentState == CurrentPanel.panel3)
+        if (currentState == CurrentPanel.panel3)
         {
             SetCurrentScene(CurrentPanel.panel2);
 
