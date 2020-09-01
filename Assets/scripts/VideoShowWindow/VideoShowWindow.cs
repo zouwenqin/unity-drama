@@ -9,7 +9,7 @@ using UnityEngine.Video;
 
 public class VideoShowWindow : MonoBehaviour
 {
-    
+   
     #region 字段
     public Transform buttons;
     public Text txt_nowTime;
@@ -28,11 +28,9 @@ public class VideoShowWindow : MonoBehaviour
     #endregion
 
     private void Start()
-    {
-        ScenarioName.text = PlayerPrefs.GetString(VideoPlayerController._instance.videoPlayer.url);
-
+    {       
         //Debug.LogError(GameManager.Instance.GetScenarioName());
-        RecordDate.text = PlayerPrefs.GetString(ScenarioName.text);
+       
         //Debug.LogError(RecordDate.text);
         //RecordDate.text = VideoPlayerController._instance.videoItemDate[Panel3_c._Instance.GetVideoItemIndex()].ToString();
         //_instance = this;
@@ -78,35 +76,50 @@ public class VideoShowWindow : MonoBehaviour
         InitVolume();
     }
 
+    private void OnEnable()
+    {
+        if (PlayerPrefs.HasKey(VideoPlayerController._instance.videoPlayer.url))
+        {
+            RecordDate.text = PlayerPrefs.GetString(VideoPlayerController._instance.videoPlayer.url);
+        }
+        if (PlayerPrefs.HasKey(RecordDate.text))
+        {
+            ScenarioName.text = PlayerPrefs.GetString(RecordDate.text);
+        }
+        AllTime();
+    }
+
     private void Update()
     {
         NowTime();
         AllTime();
     }
 
-    private void OnEnable()
-    {
-        
-    }
-
     public void DeleteVideo()
     {
-        if (File.Exists(VideoPlayerController._instance.videoPlayer.url))
+        //if (File.Exists(VideoPlayerController._instance.videoPlayer.url))
+        //{
+        //    File.Delete(VideoPlayerController._instance.videoPlayer.url);
+        //    File.Delete(VideoPlayerController._instance.videoPlayer.url + ".meta");
+        //}
+        if (File.Exists(RecordPanel._instance.fileInfos[RecordPanel._instance.GetVideoItemIndex()].FullName))
         {
-            File.Delete(VideoPlayerController._instance.videoPlayer.url);
-            File.Delete(VideoPlayerController._instance.videoPlayer.url + ".meta");
+            PlayerPrefs.DeleteKey(RecordPanel._instance.fileInfos[RecordPanel._instance.GetVideoItemIndex()].FullName);
+            PlayerPrefs.DeleteKey(RecordPanel._instance.fileInfos[RecordPanel._instance.GetVideoItemIndex()].CreationTime.ToString());
+            File.Delete(Application.streamingAssetsPath +'/'+ RecordPanel._instance.fileInfos[RecordPanel._instance.GetVideoItemIndex()].Name);
         }
         //PlayerPrefs.DeleteKey(VideoPlayerController._instance.videoPlayer.url);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        VideoPlayerController._instance.videoItemList.RemoveAt(Panel3_c._instance.GetVideoItemIndex());
+        VideoPlayerController._instance.videoItemList.RemoveAt(RecordPanel._instance.GetVideoItemIndex());
         VideoPlayerController._instance.videoItemPathList.Remove(VideoPlayerController._instance.videoPlayer.url);
-            GameObject.Destroy(Panel3_c._instance.videoItemParent.GetChild(Panel3_c._instance.GetVideoItemIndex()).gameObject);
-        //Panel3_c._Instance.CreateVideoItem();
+        GameObject.Destroy(RecordPanel._instance.videoItemParent.GetChild(RecordPanel._instance.GetVideoItemIndex()).gameObject);
+       
+        RecordPanel._instance.CreateVideoItem();
         this.gameObject.SetActive(false);
-        for (int i = 0; i < Panel3_c._instance.videoItemParent.childCount; i++)
+        for (int i = 0; i < RecordPanel._instance.videoItemParent.childCount; i++)
         {
-            Panel3_c._instance.videoItemParent.GetChild(i).GetComponent<Image>().material = null;
+            RecordPanel._instance.videoItemParent.GetChild(i).GetComponent<Image>().material = null;
         }
         
     }

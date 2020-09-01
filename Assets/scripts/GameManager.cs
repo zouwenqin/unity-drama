@@ -16,7 +16,7 @@ public class GameManager
     private string sceneName;
     private string musicName;
     private string[] actorName = { "" , "" ,"" };
-    private Sprite[] actorImage = { null, null, null };
+    private Sprite[] actorImage = new Sprite[3];
 
     public Dictionary<string, string> videoinfo = new Dictionary<string, string>();
     
@@ -32,6 +32,7 @@ public class GameManager
         }
     }
 
+    
     public void SetScenarioName(string name)
     {
         dramaName = name;
@@ -57,6 +58,7 @@ public class GameManager
 
     public void SetActorImage(int index, Sprite sprite)
     {
+        
         actorImage[index] = sprite;
     }
 

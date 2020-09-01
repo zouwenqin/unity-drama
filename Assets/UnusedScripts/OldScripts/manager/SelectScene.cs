@@ -28,10 +28,8 @@ public class SelectScene : MonoBehaviour
         {
             
             //检查数据是否全部填写
-            if (PanelOne_C.Instance.CheakData())
+            if (panel1.GetComponent<SelectPanel>().CheakData())
             {
-               
-                //Debug.LogError("检查了");
                 panel1.SetActive(false);
                 PanelManager._instance.SetCurrentScene(CurrentPanel.panel2);
                 panel2.SetActive(true);

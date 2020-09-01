@@ -79,7 +79,7 @@ public class PanelManager : MonoBehaviour
         {
 
             //检查数据是否全部填写
-            if (PanelOne_C.Instance.CheakData())
+            if (panel1.GetComponent<SelectPanel>().CheakData())
             {
                 panel1.SetActive(false);
                 SetCurrentScene(CurrentPanel.panel2);
