@@ -8,6 +8,7 @@ public enum ImageType
     ACTORIMAGE,
     SCENEIMAGE
 }
+
 public class ImageWindow : MonoBehaviour
 {
     private GameObject selectPanel;
@@ -71,7 +72,10 @@ public class ImageWindow : MonoBehaviour
         }
     }
 
-    public void OnClickCloseButton()
+    /// <summary>
+    /// 点击取消选择按钮
+    /// </summary>
+    public void OnClickCancelButton()
     {       
         isChoose = 2;
         
@@ -91,7 +95,10 @@ public class ImageWindow : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void OnClickChooseButton()
+    /// <summary>
+    /// 点击确认选择按钮
+    /// </summary>
+    public void OnClickConfirmButton()
     {   
         isChoose = 1;
         
@@ -103,6 +110,7 @@ public class ImageWindow : MonoBehaviour
                 if (i == sceneImageIndex)
                 {
                     selectPanel.GetComponent<SelectPanel>().sceneImageParent.GetChild(i).GetComponent<Image>().material = selectPanel.GetComponent<SelectPanel>().outline;
+                    selectPanel.GetComponent<SelectPanel>().BgScene.GetComponent<Image>().sprite = selectPanel.GetComponent<SelectPanel>().sceneImageParent.GetChild(i).GetComponent<Image>().sprite;
                 }
                 else
                 {

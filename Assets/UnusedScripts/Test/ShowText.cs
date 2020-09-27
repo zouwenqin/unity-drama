@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 public class ShowText : MonoBehaviour
 {
-    public static ShowText Instance;
-
+    public Button button;
+    public InputField inputField;
     private void Awake()
     {
-        Instance = this; //对单例模式进行赋值
-    }
-
-    public void Show(string str)
-    {
-        GetComponent<Text>().text = str;
+        button.onClick.AddListener(delegate { Debug.Log("点击了"); });
+        inputField.onEndEdit.AddListener(delegate
+        {
+            Debug.Log("输入了");
+        });
     }
 }

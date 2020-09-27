@@ -41,7 +41,6 @@ public class PanelManager : MonoBehaviour
     public GameObject panel3;
     public GameObject panel4;
 
-
     private void Awake()
     {
         _instance = this;  
@@ -65,15 +64,11 @@ public class PanelManager : MonoBehaviour
         currentState = _currentState;
     }
 
-    
-
     /// <summary>
     /// 点击按钮下一步
     /// </summary>
     public void OnClickNext()
     {
-
-
         //如果当前是第一个panel的状态下
         if (currentState == CurrentPanel.panel1)
         {
@@ -99,8 +94,6 @@ public class PanelManager : MonoBehaviour
             panel2.SetActive(false);
             SetCurrentScene(CurrentPanel.panel3);
             panel3.SetActive(true);
-
-
         }
 
     }

@@ -13,12 +13,13 @@ public class VideoPlayerController :MonoBehaviour
 
     public List<GameObject> videoItemList = new List<GameObject>();
     public List<string> videoItemPathList = new List<string>();
-    //public Dictionary<string, DateTime> videoItemInfo = new Dictionary<string, DateTime>();
+    public Dictionary<string, Sprite> videoItemImage = new Dictionary<string, Sprite>();
     private void Awake()
     {
-            _instance = this;   
-    }
-
-
-    
+        if(_instance != null)
+        {
+            Destroy(gameObject);
+        }
+        _instance = this;   
+    }   
 }

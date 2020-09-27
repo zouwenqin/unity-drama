@@ -20,13 +20,10 @@ public class SelectScene : MonoBehaviour
     /// 点击按钮下一步
     /// </summary>
     public void OnClickNext()
-    {
-  
-        
+    {         
         //如果当前是第一个panel的状态下
         if (PanelManager._instance.currentState == CurrentPanel.panel1)
-        {
-            
+        {            
             //检查数据是否全部填写
             if (panel1.GetComponent<SelectPanel>().CheakData())
             {
@@ -47,9 +44,7 @@ public class SelectScene : MonoBehaviour
             
                 panel2.SetActive(false);
                 PanelManager._instance.SetCurrentScene(CurrentPanel.panel3);
-                panel3.SetActive(true);
-            
-           
+                panel3.SetActive(true);                     
         }
         
     }

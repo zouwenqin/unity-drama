@@ -10,12 +10,13 @@ public class GameManager
 
     private Sprite sceneImage;
     private string dramaName;
-    private string borderStyle;
-    private string editStyle;
-    private string filterStyle;
+    private Sprite borderStyleImage;
+    private Sprite editStyle;
     private string sceneName;
     private string musicName;
-    private string[] actorName = { "" , "" ,"" };
+    private FilterStyle filterStyle;
+
+    private string[] actorName = new String[3];
     private Sprite[] actorImage = new Sprite[3];
 
     public Dictionary<string, string> videoinfo = new Dictionary<string, string>();
@@ -31,7 +32,6 @@ public class GameManager
             return _instance;
         }
     }
-
     
     public void SetScenarioName(string name)
     {
@@ -46,6 +46,7 @@ public class GameManager
     {
         sceneImage = sprite;
     }
+
     public Sprite GetSceneImage()
     {
         return sceneImage;
@@ -67,17 +68,28 @@ public class GameManager
         return actorImage[index];
     }
 
-    public string GetborderStyle()
+    
+    public void SetBorderStyle(Sprite sprite)
     {
-        return null;
+        borderStyleImage = sprite;
+    }
+    
+    public Sprite GetborderStyle()
+    {
+        return borderStyleImage;
     }
 
+    public void SetFilterStyle(FilterStyle filter)
+    {
+        filterStyle = filter;
+    }
+    public FilterStyle GetFilterStyle()
+    {
+        return filterStyle;
+    }
+
+    //TODO 
     public string GetEditStyle()
-    {
-        return null;
-    }
-
-    public string GetFilterStyle()
     {
         return null;
     }

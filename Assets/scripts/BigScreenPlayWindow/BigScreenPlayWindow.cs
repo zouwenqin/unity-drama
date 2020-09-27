@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class BigScreenPlayWindow : MonoBehaviour
 {
-   
-
-    //public static Panel4_c _instance;
     #region 字段
+    public BigScreenShowPanel bigScreenShowPanel;
+    
     public Transform buttons;
     public Text txt_nowTime;
     public Text txt_allTime;
@@ -18,10 +18,13 @@ public class BigScreenPlayWindow : MonoBehaviour
     public Slider slider_video;
     public VideoPlayer videoPlayer;
     private RawImage rawImage;
+    public Text RecordDate;
+    public Text ScenarioName;
 
     private bool showVolumeSlider = false;
     private int currentMinute, currentSecond;
     private int totalMinute, totalSecond;
+
     #endregion
 
     private void Start()
@@ -43,11 +46,10 @@ public class BigScreenPlayWindow : MonoBehaviour
                     case "btn_Stop":
                         VideoPlayerController._instance.videoPlayer.Pause();
                         break;
-                    case "btn_Confirm":
-                        Hide();
+                    case "btn_Share":
                         break;
-                    case "btn_Return":
-                        Hide();
+                    case "btn_Delete":
+                        DeleteVideo();
                         break;
                     case "btn_Volume":
                         showVolumeSlider = !showVolumeSlider;
@@ -72,16 +74,26 @@ public class BigScreenPlayWindow : MonoBehaviour
 
     private void Update()
     {
-        NowTime();
-        AllTime();
+        NowTime();       
     }
 
     private void OnEnable()
     {
-
+        if (PlayerPrefs.HasKey(VideoPlayerController._instance.videoPlayer.url))
+        {
+            RecordDate.text = PlayerPrefs.GetString(VideoPlayerController._instance.videoPlayer.url);
+        }
+        if (PlayerPrefs.HasKey(RecordDate.text))
+        {
+            //Debug.LogError(PlayerPrefs.GetString(RecordDate.text));
+            ScenarioName.text = PlayerPrefs.GetString(RecordDate.text);
+        }
+        AllTime();
     }
 
-
+    /// <summary>
+    /// 初始化视频播放的声音
+    /// </summary>
     public void InitVolume()
     {
         slider_volume.SetActive(false);
@@ -92,6 +104,9 @@ public class BigScreenPlayWindow : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// 监听播放视频时播放进度条的变化
+    /// </summary>
     public void VideoSliderListener()
     {
         slider_video.onValueChanged.AddListener((float value) => {
@@ -101,8 +116,12 @@ public class BigScreenPlayWindow : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// 视频正在播放的时长进度
+    /// </summary>
     public void NowTime()
     {
+        
         slider_video.value = float.Parse(videoPlayer.frame.ToString()) / float.Parse(videoPlayer.frameCount.ToString()); ;
         currentMinute = (int)videoPlayer.time / 60;
         currentSecond = (int)(videoPlayer.time - currentMinute * 60);
@@ -110,11 +129,21 @@ public class BigScreenPlayWindow : MonoBehaviour
         //slider_video.value = float.Parse( videoPlayer.time.ToString()) / float.Parse( videoPlayer.length.ToString());
     }
 
+    /// <summary>
+    /// 视频片段总时长显示
+    /// </summary>
     public void AllTime()
     {
-        totalMinute = (int)(videoPlayer.frameCount / videoPlayer.frameRate / 60);
-        totalSecond = (int)(videoPlayer.frameCount / videoPlayer.frameRate % 60);
-        txt_allTime.text = string.Format("{0:D2}:{1:D2}", totalMinute, totalSecond);
+        float duration;
+        videoPlayer.Prepare();
+        videoPlayer.prepareCompleted += (val) =>
+        {
+            duration = videoPlayer.frameCount / videoPlayer.frameRate;
+            totalMinute = (int)(videoPlayer.frameCount / videoPlayer.frameRate) / 60;
+            totalSecond = ((int)(videoPlayer.frameCount / videoPlayer.frameRate)) % 60;           
+            txt_allTime.text = string.Format("{0:D2}:{1:D2}", totalMinute, totalSecond);
+        };        
+        
     }
 
     public void OnClickSetFullScreen()
@@ -134,4 +163,30 @@ public class BigScreenPlayWindow : MonoBehaviour
         VideoPlayerController._instance.videoPlayer.Stop();
     }
 
+    public void DeleteVideo()
+    {
+        if (File.Exists(bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].FullName))
+        {
+            if (VideoPlayerController._instance.videoItemImage.ContainsKey(bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].FullName))
+            {
+                VideoPlayerController._instance.videoItemImage.Remove(bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].FullName);
+            }
+            PlayerPrefs.DeleteKey(bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].FullName);
+            PlayerPrefs.DeleteKey(bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].CreationTime.ToString());
+            File.Delete(Application.streamingAssetsPath + '/' + bigScreenShowPanel.fileInfos[bigScreenShowPanel.GetVideoItemIndex()].Name);
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        VideoPlayerController._instance.videoItemList.RemoveAt(bigScreenShowPanel.GetVideoItemIndex());
+        VideoPlayerController._instance.videoItemPathList.Remove(VideoPlayerController._instance.videoPlayer.url);
+        GameObject.Destroy(bigScreenShowPanel.videoItemParent.GetChild(bigScreenShowPanel.GetVideoItemIndex()).gameObject);
+
+        bigScreenShowPanel.CreateVideoItem();
+        this.gameObject.SetActive(false);
+        for (int i = 0; i < bigScreenShowPanel.videoItemParent.childCount; i++)
+        {
+            bigScreenShowPanel.videoItemParent.GetChild(i).GetComponent<Image>().material = null;
+        }
+
+    }
 }

@@ -11,18 +11,19 @@ public class SelectPanel : MonoBehaviour
     private string playerName1;
     private string playerName2;
     private string playerName3;
-    
+
     private Sprite sceneImage;
-    public Sprite actorImage1;
-    public Sprite actorImage2;
-    public Sprite actorImage3;
-    public Sprite[] actorImage =new Sprite[3] { null, null, null };
+    public GameObject BgScene;
+    //public Sprite actorImage1;
+    //public Sprite actorImage2;
+    //public Sprite actorImage3;
+    public Sprite[] actorImage = new Sprite[3];
 
     [HideInInspector]
     public Material outline;
     #endregion
     
-    public  InputField inputField_scenarioName;
+    public InputField inputField_scenarioName;
     public InputField inputField_player1;
     public InputField inputField_player2;
     public InputField inputField_player3;
@@ -31,6 +32,7 @@ public class SelectPanel : MonoBehaviour
 
     public Transform sceneImageParent;
     public Transform actorImageParent;
+    
 
     private Sprite defaultScene;
     private Sprite defaultActorImage1;
@@ -98,11 +100,6 @@ public class SelectPanel : MonoBehaviour
         });
     }
 
-    
-    /// <summary>
-    /// 上一个选择的场景图片
-    /// </summary>
-    private Transform lastSelectScene;
     /// <summary>
     /// 选择屏幕背景图
     /// </summary>
@@ -130,7 +127,7 @@ public class SelectPanel : MonoBehaviour
     /// </summary>
     public void DropDownListener()
     {
-        if(sceneImage == defaultScene && defaultActorImage1 == actorImage1 &&defaultActorImage2 == actorImage2)
+        if(sceneImage == defaultScene && defaultActorImage1 == actorImage[0] &&defaultActorImage2 == actorImage[1])
         {
             drop.captionText.text = drop.options[0].text;
         }
@@ -146,9 +143,10 @@ public class SelectPanel : MonoBehaviour
     /// <returns></returns>
     public bool CheakData()
     {
+       
         for (int i = 0; i < sceneImageParent.childCount; i++)
         {
-            if(sceneImageParent.GetChild(i).GetComponent<Image>().material != null)
+            if(sceneImageParent.GetChild(i).GetComponent<Image>().material  == outline)
             {
                 sceneImage = sceneImageParent.GetChild(i).GetComponent<Image>().sprite;
                 GameManager.Instance.SetSceneImage(sceneImage);
@@ -160,8 +158,7 @@ public class SelectPanel : MonoBehaviour
             return false;
         }
         else
-        {
-            
+        {            
             for (int i = 0; i < actorImageParent.childCount; i++)
             {
                 if(actorImageParent.GetChild(i).GetComponent<Image>().material == outline)
@@ -182,28 +179,6 @@ public class SelectPanel : MonoBehaviour
             return true;
         }
     }
-
-    /// <summary>
-    /// 无外框的点击显示外框，返回true，已有外框的点击禁用外框，返回false
-    /// </summary>
-    /// <param name="trans"></param>
-    /// <returns></returns>
-    bool ShowHideOutLine(Transform trans)
-    {
-        if (trans.GetComponent<Image>().material != outline)
-        {
-
-            trans.GetComponent<Image>().material = outline;
-            return true;
-        }
-        else
-        {
-
-            trans.GetComponent<Image>().material = null;
-            return false;
-        }
-    }
-
     #endregion
 
     public void ClearData()
@@ -213,9 +188,22 @@ public class SelectPanel : MonoBehaviour
         playerName2 = "";
         playerName3 = "";
         sceneImage = null;
-        actorImage1 = null;
-        actorImage2 = null;
-        actorImage3 = null;
+        GameManager.Instance.SetSceneImage(null);
+        inputField_scenarioName.text = null;
+        inputField_player1.text = null;
+        inputField_player2.text = null;
+        inputField_player3.text = null;
+        for (int i = 0; i < sceneImageParent.childCount; i++)
+        {
+            sceneImageParent.GetChild(i).GetComponent<Image>().material = null;
+        }
+        for (int i = 0; i < actorImageParent.childCount; i++)
+        {
+            actorImageParent.GetChild(i).GetComponent<Image>().material = null;
+        }
+        //actorImage1 = null;
+        //actorImage2 = null;
+        //actorImage3 = null;
     }
 
 

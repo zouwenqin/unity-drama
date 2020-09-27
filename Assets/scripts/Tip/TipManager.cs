@@ -18,6 +18,7 @@ public class TipManager : MonoBehaviour
         text_tip.text = tipStr;
         Invoke("TipHide", showTime);
     }
+
     public void TipHide()
     {
         text_tip.gameObject.SetActive(false);

@@ -11,5 +11,7 @@ public class VideoItem : MonoBehaviour
     public string recordScenarioName;
     [HideInInspector]
     public DateTime recordTime;
+    [HideInInspector]
+    public string convertDatetime;
 
 }

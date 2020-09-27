@@ -17,19 +17,19 @@ public enum BorderStyle
     /// </summary>
     colorized,
     /// <summary>
-    /// 黑白
+    /// 清新
     /// </summary>
-    blackAndWhite
+    fresh
 }
+
 /// <summary>
 /// 滤镜风格
 /// </summary>
 public enum FilterStyle
 {
-
     vintage,
-    colorized,
-    blackAndWhite
+    soft,
+    bright
 }
 
 public enum EditStyle
@@ -38,28 +38,76 @@ public enum EditStyle
     colorized,
     blackAndWhite
 }
+
 /// <summary>
-/// 第二个界面
+/// 风格选择界面
 /// </summary>
 public class StylePanel : MonoBehaviour
 {
     public Dropdown borderStyle;
     public Dropdown filterStyle;
     public Dropdown editStyle;
-    public Sprite[] styleImages;
+    [HideInInspector]
+    public Sprite borderImage;
+    public Sprite vintageBorder;
+    public Sprite colorizedBorder;
+    public Sprite freshBorder;
+    public Camera RecorderCamera;
+    public Image sceneImage;
 
     void Start()
     {
-        ChooseStyle();
+        borderImage = vintageBorder;
+        GameManager.Instance.SetFilterStyle(FilterStyle.vintage);       
+        borderStyle.onValueChanged.AddListener(BorderDropDownListener);
+        filterStyle.onValueChanged.AddListener(FilterDropDownListener);
     }
 
-    public void ChooseStyle()
+    public void OnEnable()
     {
-        if(borderStyle.value  == 0 && filterStyle.value == 0)
-        {
-
-        }
+        sceneImage.sprite = GameManager.Instance.GetSceneImage();
     }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.SetBorderStyle(borderImage);
+    }
+
+    public void BorderDropDownListener(int value)
+    {
+        if(value == 0)
+        {
+            borderImage = vintageBorder;
+        }
+        if(value == 1)
+        {
+            borderImage = colorizedBorder;
+        }
+        if(value ==2)
+        {
+            borderImage = freshBorder;
+        }
+        
+    }
+
+    public void FilterDropDownListener(int value)
+    {
+        if (value == 0)
+        {
+            GameManager.Instance.SetFilterStyle(FilterStyle.vintage);
+        }
+        else if (value == 1)
+        {
+            GameManager.Instance.SetFilterStyle(FilterStyle.soft);
+        }
+        else if (value == 2)
+        {
+            GameManager.Instance.SetFilterStyle(FilterStyle.bright);
+        }
+
+    }
+
+   
 
 
 

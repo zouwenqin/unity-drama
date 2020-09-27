@@ -70,7 +70,7 @@ public class MusicController : MonoBehaviour
         InitVolume();
         //btn_playMode.onClick.AddListener(OnClickChangePlayMode);
         MusicSliderListener();
-        musicItemsParent = GameObject.Find("PanelTwo/MusicController/MusicOptionsPanel");
+        musicItemsParent = GameObject.Find("TwoStyleAndMusicPanel/MusicController/MusicOptionsPanel");
     }
 
     private void Update()
@@ -95,9 +95,9 @@ public class MusicController : MonoBehaviour
             {
                 item.transform.Find("Toggle").GetComponent<Toggle>().isOn = false;
             }
-            item.transform.Find("Toggle").GetComponent<Toggle>().group = GameObject.Find("PanelTwo/MusicController/MusicOptionsPanel").GetComponent<ToggleGroup>();
+            item.transform.Find("Toggle").GetComponent<Toggle>().group = GameObject.Find("TwoStyleAndMusicPanel/MusicController/MusicOptionsPanel").GetComponent<ToggleGroup>();
             
-            item.transform.SetParent(GameObject.Find("PanelTwo/MusicController/MusicOptionsPanel").transform, false);
+            item.transform.SetParent(GameObject.Find("TwoStyleAndMusicPanel/MusicController/MusicOptionsPanel").transform, false);
             item.transform.Find("txt_Number").GetComponent<Text>().text = string.Format("0{0}", i + 1);
             item.transform.Find("txt_Name").GetComponent<Text>().text = lyricAudioClips[i].name;
             item.transform.Find("txt_TotalTime").GetComponent<Text>().text = GetTotalMusicTime(lyricAudioClips[i]);
@@ -138,9 +138,8 @@ public class MusicController : MonoBehaviour
             {
                 item.transform.Find("Toggle").GetComponent<Toggle>().isOn = false;
             }
-            item.transform.Find("Toggle").GetComponent<Toggle>().group = GameObject.Find("PanelTwo/MusicController/MusicOptionsPanel").GetComponent<ToggleGroup>();
-           
-            item.transform.SetParent(GameObject.Find("PanelTwo/MusicController/MusicOptionsPanel").transform, false);
+            item.transform.Find("Toggle").GetComponent<Toggle>().group = GameObject.Find("TwoStyleAndMusicPanel/MusicController/MusicOptionsPanel").GetComponent<ToggleGroup>();           
+            item.transform.SetParent(GameObject.Find("TwoStyleAndMusicPanel/MusicController/MusicOptionsPanel").transform, false);
             item.transform.Find("txt_Number").GetComponent<Text>().text = string.Format("0{0}", i + 1);
             item.transform.Find("txt_Name").GetComponent<Text>().text = cheerfulAudioClips[i].name;
             item.transform.Find("txt_TotalTime").GetComponent<Text>().text = GetTotalMusicTime(cheerfulAudioClips[i]);
